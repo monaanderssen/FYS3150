@@ -42,9 +42,10 @@ void output(int, int, double, double *);
 int main(int argc, char* argv[])
 {
   char *outfilename;
-  long idum;
-  int **spin_matrix, n_spins, mcs;
-  double w[17], average[5], initial_temp, final_temp, E, M, temp_step;
+  long idum; //starting point
+  int **spin_matrix, n_spins, mcs; //spin matrix, number of spins and Monte Carlo cycles
+  double w[17], average[5], initial_temp, final_temp, E, M, temp_step; //possible values of delta E
+  //average values, initial temperature, final temperature, energy, magnetization, increase of temperature
 
   // Read in output file, abort if there are too few command-line arguments
   if( argc <= 1 ){
@@ -56,7 +57,7 @@ int main(int argc, char* argv[])
     outfilename=argv[1];
   }
   ofile.open(outfilename);
-  cout << outfilename << endl;
+
   //    Read in initial values such as size of lattice, temp and cycles
   read_input(n_spins, mcs, initial_temp, final_temp, temp_step);
   spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
@@ -66,7 +67,7 @@ int main(int argc, char* argv[])
     E = M = 0.;
     // setup array for possible energy changes
     for( int de =-8; de <= 8; de++) w[de+8] = 0;
-    for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temperature);
+    for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temperature); //possible values of delta E
     // initialise array for expectation values
     for( int i = 0; i < 5; i++) average[i] = 0.;
     initialize(n_spins, temperature, spin_matrix, E, M);
@@ -148,6 +149,7 @@ void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M,
 
 void output(int n_spins, int mcs, double temperature, double *average)
 {
+  //mcs = number of Monte Carlo cycles, Eaverage = expectation value of E
   double norm = 1/((double) (mcs));  // divided by total number of cycles
   double Eaverage = average[0]*norm;
   double E2average = average[1]*norm;
@@ -158,12 +160,12 @@ void output(int n_spins, int mcs, double temperature, double *average)
   double Evariance = (E2average- Eaverage*Eaverage)/n_spins/n_spins;
   double Mvariance = (M2average - Mabsaverage*Mabsaverage)/n_spins/n_spins;
   ofile << setiosflags(ios::showpoint | ios::uppercase);
-  ofile << setw(15) << setprecision(8) << temperature;
-  ofile << setw(15) << setprecision(8) << Eaverage/n_spins/n_spins;
-  ofile << setw(15) << setprecision(8) << Evariance/temperature/temperature;
-  ofile << setw(15) << setprecision(8) << Maverage/n_spins/n_spins;
-  ofile << setw(15) << setprecision(8) << Mvariance/temperature;
-  ofile << setw(15) << setprecision(8) << Mabsaverage/n_spins/n_spins << endl;
+  ofile << setw(15) << setprecision(8) << temperature; //T
+  ofile << setw(15) << setprecision(8) << Eaverage/n_spins/n_spins; //<E>
+  ofile << setw(15) << setprecision(8) << Evariance; //C_V
+  ofile << setw(15) << setprecision(8) << Maverage/n_spins/n_spins; //<M>
+  ofile << setw(15) << setprecision(8) << Mvariance/temperature; //chi
+  ofile << setw(15) << setprecision(8) << Mabsaverage/n_spins/n_spins << endl; //|M|
 } // end output function
 
 
