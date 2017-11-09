@@ -20,13 +20,15 @@ counter = 0
 for line in file: 
     line_ = line.split()            
     E_average[counter] = float(line_[1])
-    M_abs[counter] = float(line_[3])
+    M_abs[counter] = float(line_[5])
 
     counter += 1
 
 fig, ax = plt.subplots()
 
 plt.plot(M_C, E_average, '-', color='black')
+plt.show()
+plt.plot(M_C, M_abs)
 
 plt.title('Mean energy', fontsize = 22)
 plt.xlabel('Monte Carlo simulations', fontsize = 22)

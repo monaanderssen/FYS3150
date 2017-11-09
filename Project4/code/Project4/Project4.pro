@@ -5,7 +5,7 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     lib.cpp
-INCLUDEPATH += /usr/local/include
+INCLUDEPATH += /usr/local/include /usr/l
 LIBS += -L/usr/local/lib -larmadillo -llapack -lblas
 
 HEADERS += \
