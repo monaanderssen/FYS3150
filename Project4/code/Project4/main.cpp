@@ -4,7 +4,10 @@
 #include <iomanip>
 #include "lib.h"
 #include <mpi.h>
+#include <omp.h>
 using namespace  std;
+
+//Use openMP or MPI
 
 ofstream ofile;
 
@@ -208,6 +211,8 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
 void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w)
 {
   // loop over all spins
+  //PARALLELIZATION HERE
+  #pragma omp parallel private(var1,var2) shared(var3)
   for(int y =0; y < n_spins; y++) {
     for (int x= 0; x < n_spins; x++){
       int ix = (int) (ran1(&idum)*(double)n_spins);
@@ -224,6 +229,7 @@ void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M,
       }
     }
   }
+  //END PARALLELIZATION
 } // end of Metropolis sampling over spins
 
 
