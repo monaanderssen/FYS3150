@@ -5,9 +5,12 @@
 #include "lib.h"
 #include <mpi.h>
 #include "time.h"
+#include <armadillo>
+#include <stdlib.h>
 //#include <mpi.h>
 //#include <omp.h>
 using namespace  std;
+using namespace arma;
 
 //Use openMP or MPI
 // Command line: -np 4 Project4 /uio/hume/student-u85/monande/FYS3150/FYS3150/Project4/results/results.txt
@@ -32,8 +35,9 @@ inline int periodic(int i, int limit, int add) {
 void read_input(int&, int&, double&, double&, double&, string&matrix_type, string &iteration_type, int& MonteCarloSimulationValuesStart, int& MonteCarloSimulationValuesEnd, int &MonteCarloStepSize);
 // Function to initialise energy and magnetization
 void initialize(int, double, int **, double&, double&, string&, long&);
+double deltaE(double **spin_matrix, int i, int j, int n_spin);
 // The metropolis algorithm
-void Metropolis(int, long&, int **, double&, double&, double *);
+void Metropolis(int, long&, int **, double&, double&, double *, int mcs);
 // prints to file the results of the calculations
 void output(int, int, double, double *);
 
@@ -69,33 +73,41 @@ int main(int argc, char* argv[])
     //}
 
     //    Read in initial values such as size of lattice, temp and cycles
-    read_input(n_spins,
-               mcs,
-               initial_temp,
-               final_temp,
-               temp_step,
-               matrix_type,
-               iteration_type,
-               MonteCarloSimulationValuesStart,
-               MonteCarloSimulationValuesEnd,
-               MonteCarloStepSize);
+        matrix_type = "random"; // random or ordered
+        mcs = 100;
+        n_spins = 20;
+        initial_temp = 1;
+        final_temp = 1;
+        temp_step = 0.0002;
+//    read_input(n_spins,
+//               mcs,
+//               initial_temp,
+//               final_temp,
+//               temp_step,
+//               matrix_type,
+//               iteration_type,
+//               MonteCarloSimulationValuesStart,
+//               MonteCarloSimulationValuesEnd,
+//               MonteCarloStepSize);
 
     spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
     idum = -1-my_rank; // random starting point
     double temperature = initial_temp;
     double  TimeStart, TimeEnd, TotalTime;
 
-    if (iteration_type=="T") {
+    //if (iteration_type=="T") {
         ofile.open(outfilename+to_string(my_rank));
         if (!ofile.is_open()) cout << "could not open file " << outfilename+to_string(my_rank) << endl;
-    } else if(iteration_type == "MC") {
-        if (my_rank == 0) ofile.open(outfilename);
-    } else {
-        if (my_rank == 0)cout << "iteration type unknown: " << iteration_type << ". exiting "<< endl;
-        if (my_rank == 0)return 0;
-    }
+    //}
+        //else if(iteration_type == "MC") {
+        //if (my_rank == 0) ofile.open(outfilename);
+    //}
+        //else {
+        //if (my_rank == 0)cout << "iteration type unknown: " << iteration_type << ". exiting "<< endl;
+        //if (my_rank == 0)return 0;
+    //}
 
-    if(iteration_type == "T"){
+    //if(iteration_type == "T"){
         //int total_T_steps = (final_temp - initial_temp)/temp_step;
         double interval = (final_temp - initial_temp)/numprocs;
 
@@ -117,16 +129,17 @@ int main(int argc, char* argv[])
             initialize(n_spins, temperature, spin_matrix, E, M, matrix_type, idum);
             // start Monte Carlo computation
             for (int cycles = 1; cycles <= mcs; cycles++){
-                Metropolis(n_spins, idum, spin_matrix, E, M, w);
+                Metropolis(n_spins, idum, spin_matrix, E, M, w, mcs);
                 // update expectation values
-                average[0] += E;    average[1] += E*E;
-                average[2] += M;    average[3] += M*M; average[4] += fabs(M);
+                average[0] = E;    average[1] = E*E; //should be += (maybe?)
+                average[2] = M;    average[3] = M*M; average[4] = fabs(M);
+                //cout << "average[1]: " << average[0] << endl;
                 output(n_spins, cycles, temperature, average);
             }
             // print results
             //output(n_spins, mcs, temperature, average);
         }
-    }
+    //}
 
 
 //    if(iteration_type == "MC"){
@@ -197,46 +210,46 @@ int main(int argc, char* argv[])
 
 
 // read in input data
-void read_input(int& n_spins, int& mcs, double& initial_temp,
-                double& final_temp, double& temp_step, string& matrix_type, string& iteration_type, int& MonteCarloSimulationValuesStart, int& MonteCarloSimulationValuesEnd, int& MonteCarloStepSize)
-{
-    iteration_type = "T"; // MC or T
-    matrix_type = "ordered"; // random or ordered
-    if(iteration_type == "MC"){
-        MonteCarloSimulationValuesStart = 1;
-        MonteCarloSimulationValuesEnd = 1000;
-        MonteCarloStepSize = 10;
-    }
-    if(iteration_type == "T") mcs = 100000;
-    n_spins = 20;
-    initial_temp = 2.4;
-    final_temp = 2.4;
-    temp_step = 0.0002;
-    //  cout << "Iterate over Monte-Carlo [MC] or only temperature [T]? ";
-    //  cin >> iteration_type;
-    //  cout << "Random or ordered matrix? ";
-    //  cin >> matrix_type;
-    //  if(iteration_type == "T"){
-    //      cout << "Number of Monte Carlo trials =";
-    //      cin >> mcs;
-    //  }
-    //  if(iteration_type == "MC"){
-    //      cout << "Start value for number of Monte Carlo simulations: ";
-    //      cin >> MonteCarloSimulationValuesStart;
-    //      cout << "Final value for number of Monte Carlo simulations: ";
-    //      cin >> MonteCarloSimulationValuesEnd;
-    //      cout << "What step size do you want for that? ";
-    //      cin >> MonteCarloStepSize;
-    //  }
-    //  cout << "Lattice size or number of spins (x and y equal) =";
-    //  cin >> n_spins;
-    //  cout << "Initial temperature with dimension energy=";
-    //  cin >> initial_temp;
-    //  cout << "Final temperature with dimension energy=";
-    //  cin >> final_temp;
-    //  cout << "Temperature step with dimension energy=";
-    //  cin >> temp_step;
-} // end of function read_input
+//void read_input(int& n_spins, int& mcs, double& initial_temp,
+//                double& final_temp, double& temp_step, string& matrix_type, string& iteration_type, int& MonteCarloSimulationValuesStart, int& MonteCarloSimulationValuesEnd, int& MonteCarloStepSize)
+//{
+//    iteration_type = "T"; // MC or T
+//    matrix_type = "random"; // random or ordered
+//    if(iteration_type == "MC"){
+//        MonteCarloSimulationValuesStart = 1;
+//        MonteCarloSimulationValuesEnd = 1000;
+//        MonteCarloStepSize = 1;
+//    }
+//    if(iteration_type == "T") mcs = 10000;
+//    n_spins = 20;
+//    initial_temp = 1;
+//    final_temp = 1;
+//    temp_step = 0.0002;
+//    //  cout << "Iterate over Monte-Carlo [MC] or only temperature [T]? ";
+//    //  cin >> iteration_type;
+//    //  cout << "Random or ordered matrix? ";
+//    //  cin >> matrix_type;
+//    //  if(iteration_type == "T"){
+//    //      cout << "Number of Monte Carlo trials =";
+//    //      cin >> mcs;
+//    //  }
+//    //  if(iteration_type == "MC"){
+//    //      cout << "Start value for number of Monte Carlo simulations: ";
+//    //      cin >> MonteCarloSimulationValuesStart;
+//    //      cout << "Final value for number of Monte Carlo simulations: ";
+//    //      cin >> MonteCarloSimulationValuesEnd;
+//    //      cout << "What step size do you want for that? ";
+//    //      cin >> MonteCarloStepSize;
+//    //  }
+//    //  cout << "Lattice size or number of spins (x and y equal) =";
+//    //  cin >> n_spins;
+//    //  cout << "Initial temperature with dimension energy=";
+//    //  cin >> initial_temp;
+//    //  cout << "Final temperature with dimension energy=";
+//    //  cin >> final_temp;
+//    //  cout << "Temperature step with dimension energy=";
+//    //  cin >> temp_step;
+//} // end of function read_input
 
 
 // function to initialise energy, spin matrix and magnetization
@@ -249,24 +262,53 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
             for (int x= 0; x < n_spins; x++){
                 spin_matrix[y][x] = 1; // spin orientation for the ground state
                 M +=  (double) spin_matrix[y][x];
+                cout << "M: " << M << endl;
             }
         }
     }
 
+//    if(matrix_type == "random"){
+//        for(int y =0; y < n_spins; y++) {
+//            for (int x= 0; x < n_spins; x++){
+//                //idum.randu();
+//                //int random_number = rand() % 2;
+//                if((&idum.randu()) <  0.5){
+//                    spin_matrix[y][x] = 1; // spin orientation for the ground state
+//                }
+//                else{
+//                    spin_matrix[y][x] = -1; // spin orientation for the ground state
+//                }
+//                M +=  (double) spin_matrix[y][x];
+//            }
+//        }
+//    }
     if(matrix_type == "random"){
-        for(int y =0; y < n_spins; y++) {
-            for (int x= 0; x < n_spins; x++){
-                int random_number = rand() % 2;
-                if(ran1(&idum) <  0.5){
-                    spin_matrix[y][x] = 1; // spin orientation for the ground state
+        //int **spin_matrix = new int*[n_spins]; // disse skal bort. vi har allerede deklarert, og det blir bare tull med disse (Magnus fikset)
+        //for(int i = 0; i < n_spins; i++){
+        //    spin_matrix[i] = new int[n_spins];
+
+        //}
+        for(int i = 0; i< n_spins; i++){
+            for(int j = 0; j<n_spins; j++){
+                int x = rand() %2 ;//ran1(&idum);
+                //cout << x << endl;
+
+                if(x == 1){
+                    spin_matrix[i][j] = 1;
                 }
-                else{
-                    spin_matrix[y][x] = -1; // spin orientation for the ground state
+                else {
+                    spin_matrix[i][j] = -1;
                 }
-                M +=  (double) spin_matrix[y][x];
+            }
+        }
+        // Printing all the spinvalues for all the elements in the matrix (just to check that they are +1 or -1:
+        for(int i = 0; i < n_spins; i++){
+            for(int j = 0; j<n_spins; j++){
+                cout << i << "," << j << ": " << spin_matrix[i][j] << endl;
             }
         }
     }
+
 
     // setup initial energy
     for(int y =0; y < n_spins; y++) {
@@ -274,31 +316,54 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
             E -=  (double) spin_matrix[y][x]*
                     (spin_matrix[periodic(y,n_spins,-1)][x] +
                     spin_matrix[y][periodic(x,n_spins,-1)]);
+            cout << "E" << ": " << E << endl;
         }
     }
 }// end function initialise
 
-void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w)
+double deltaE(int **spin_matrix, int i, int j, int n_spin){
+    int up = j+1;
+    int down = j-1;
+    int left = i-1;
+    int right = i+1;
+    if (i == n_spin-1) right = 0;
+    if (i == 0)   left = n_spin-1;
+    if (j == n_spin-1) up = 0;
+    if (j == 0)   down = n_spin-1;
+
+    double dE = 2*(spin_matrix[i][j]*(spin_matrix[i][up]+spin_matrix[i][down]+spin_matrix[left][j]+spin_matrix[right][j]));
+    //cout << "dE" << ": " << dE << endl;
+    return dE;
+}
+
+
+
+void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w, int mcs)
 {
     //double startClock = clock();
     // loop over all spins
     //PARALLELIZATION HERE
     //#pragma omp parallel private(var1,var2) shared(var3)
-    for(int y =0; y < n_spins; y++) {
-        for (int x= 0; x < n_spins; x++){
-            int ix = (int) (ran1(&idum)*(double)n_spins);
-            int iy = (int) (ran1(&idum)*(double)n_spins);
-            int deltaE =  2*spin_matrix[iy][ix]*
-                    (spin_matrix[iy][periodic(ix,n_spins,-1)]+
-                    spin_matrix[periodic(iy,n_spins,-1)][ix] +
-                    spin_matrix[iy][periodic(ix,n_spins,1)] +
-                    spin_matrix[periodic(iy,n_spins,1)][ix]);
-            if ( ran1(&idum) <= w[deltaE+8] ) {
-                spin_matrix[iy][ix] *= -1;  // flip one spin and accept new spin config
-                M += (double) 2*spin_matrix[iy][ix];
-                E += (double) deltaE;
+    int counter = 0;
+    //double beta = 1./T;
+    while (counter < mcs){
+        for(int j =0; j < n_spins; j++) {
+            for (int i= 0; i < n_spins; i++){
+                //int ix = rand() %2;
+                //int iy = rand() %2;
+                //cout << ix << iy << endl;
+                //int ix = (int) (ran1(&idum)*(double)n_spins);
+                //int iy = (int) (ran1(&idum)*(double)n_spins);
+                double dE = deltaE(spin_matrix, i, j, n_spins);
+//                cout << dE << endl;
+//                if ( dE <= w[dE+8]){
+//                    spin_matrix[iy][ix] *= -1;  // flip one spin and accept new spin config
+//                    M += (double) 2*spin_matrix[iy][ix];
+//                    E += (double) deltaE;
+//                }
             }
         }
+        counter++;
     }
     //    double elapsedTime = clock() - startClock;
     //    std::cout << "Time = " << "\t" << setprecision(16) << elapsedTime << " seconds" << std::endl; // print elapsed time
@@ -308,9 +373,9 @@ void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M,
 
 void output(int n_spins, int mcs, double temperature, double *total_average)
 {
-    //cout << "hei" << endl;
     //mcs = number of Monte Carlo cycles, Eaverage = expectation value of E
     double norm = 1/((double) (mcs));  // divided by total number of cycles
+    //cout << total_average[0]*norm << endl;
     double Etotal_average = total_average[0]*norm;
     double E2total_average = total_average[1]*norm;
     double Mtotal_average = total_average[2]*norm;
