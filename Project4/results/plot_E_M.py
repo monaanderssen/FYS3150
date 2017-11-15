@@ -32,7 +32,7 @@ for line in file:
     length += 1
 length *= len(inputfiles)
 
-M_C = np.linspace(10,10000, length)
+M_C = np.linspace(0,1000, length)
 T = []
 E_average  = []
 E_variance = []

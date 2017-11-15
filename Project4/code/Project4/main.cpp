@@ -73,11 +73,11 @@ int main(int argc, char* argv[])
     //}
 
     //    Read in initial values such as size of lattice, temp and cycles
-        matrix_type = "random"; // random or ordered
-        mcs = 100;
+        matrix_type = "ordered"; // random or ordered
+        mcs = 1000;
         n_spins = 20;
-        initial_temp = 1;
-        final_temp = 1;
+        initial_temp = 2.4;
+        final_temp = 2.4;
         temp_step = 0.0002;
 //    read_input(n_spins,
 //               mcs,
@@ -261,27 +261,12 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
         for(int y =0; y < n_spins; y++) {
             for (int x= 0; x < n_spins; x++){
                 spin_matrix[y][x] = 1; // spin orientation for the ground state
-                M +=  (double) spin_matrix[y][x];
-                cout << "M: " << M << endl;
+                //M +=  (double) spin_matrix[y][x];
+                //cout << "M: " << M << endl;
             }
         }
     }
 
-//    if(matrix_type == "random"){
-//        for(int y =0; y < n_spins; y++) {
-//            for (int x= 0; x < n_spins; x++){
-//                //idum.randu();
-//                //int random_number = rand() % 2;
-//                if((&idum.randu()) <  0.5){
-//                    spin_matrix[y][x] = 1; // spin orientation for the ground state
-//                }
-//                else{
-//                    spin_matrix[y][x] = -1; // spin orientation for the ground state
-//                }
-//                M +=  (double) spin_matrix[y][x];
-//            }
-//        }
-//    }
     if(matrix_type == "random"){
         //int **spin_matrix = new int*[n_spins]; // disse skal bort. vi har allerede deklarert, og det blir bare tull med disse (Magnus fikset)
         //for(int i = 0; i < n_spins; i++){
@@ -299,6 +284,8 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
                 else {
                     spin_matrix[i][j] = -1;
                 }
+
+
             }
         }
         // Printing all the spinvalues for all the elements in the matrix (just to check that they are +1 or -1:
@@ -310,13 +297,14 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
     }
 
 
-    // setup initial energy
+    // setup initial energy and magnetization
     for(int y =0; y < n_spins; y++) {
         for (int x= 0; x < n_spins; x++){
             E -=  (double) spin_matrix[y][x]*
                     (spin_matrix[periodic(y,n_spins,-1)][x] +
                     spin_matrix[y][periodic(x,n_spins,-1)]);
-            cout << "E" << ": " << E << endl;
+            //cout << "E" << ": " << E << endl;
+            M +=  (double) spin_matrix[y][x];
         }
     }
 }// end function initialise
@@ -349,18 +337,21 @@ void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M,
     while (counter < mcs){
         for(int j =0; j < n_spins; j++) {
             for (int i= 0; i < n_spins; i++){
-                //int ix = rand() %2;
-                //int iy = rand() %2;
+                //cout << rand() % n_spins << endl;
+                int ix = (rand() % n_spins);
+                int iy = (rand() % n_spins);
                 //cout << ix << iy << endl;
                 //int ix = (int) (ran1(&idum)*(double)n_spins);
                 //int iy = (int) (ran1(&idum)*(double)n_spins);
-                double dE = deltaE(spin_matrix, i, j, n_spins);
+                int dE = deltaE(spin_matrix, i, j, n_spins);
 //                cout << dE << endl;
-//                if ( dE <= w[dE+8]){
-//                    spin_matrix[iy][ix] *= -1;  // flip one spin and accept new spin config
-//                    M += (double) 2*spin_matrix[iy][ix];
-//                    E += (double) deltaE;
-//                }
+                //cout << dE << endl;
+                //cout << w[(int) dE + 8] << endl;
+                if ( dE <= w[dE+8]){
+                    spin_matrix[iy][ix] *= -1;  // flip one spin and accept new spin config
+                    M += (double) 2*spin_matrix[iy][ix];
+                    E += (double) dE;
+                }
             }
         }
         counter++;
@@ -375,7 +366,7 @@ void output(int n_spins, int mcs, double temperature, double *total_average)
 {
     //mcs = number of Monte Carlo cycles, Eaverage = expectation value of E
     double norm = 1/((double) (mcs));  // divided by total number of cycles
-    //cout << total_average[0]*norm << endl;
+    //norm = 1.;
     double Etotal_average = total_average[0]*norm;
     double E2total_average = total_average[1]*norm;
     double Mtotal_average = total_average[2]*norm;
