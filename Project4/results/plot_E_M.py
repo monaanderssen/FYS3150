@@ -111,7 +111,13 @@ plt.axis([0,5000,0,1])
 plt.show()"""
 
 #HISTOGRAM
-plt.hist(E_random_average[2000:])
+plt.hist(E_random_average[1000:])
+plt.title("Mean energy with T = 1.0", fontsize = 22)
+plt.xlabel('Mean energy', fontsize = 22)
+plt.ylabel('Probability', fontsize = 22)
+pylab.xticks(fontsize=16)
+pylab.yticks(fontsize=16)
+plt.grid('on')
 plt.show()
 """
 fig, ax = plt.subplots()
