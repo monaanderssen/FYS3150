@@ -91,8 +91,10 @@ int main(int argc, char* argv[])
     double  TimeStart, TimeEnd, TotalTime;
 
     //if (iteration_type=="T") {
+
 //        ofile.open(outfilename+to_string(my_rank));
 //        if (!ofile.is_open()) cout << "could not open file " << outfilename+to_string(my_rank) << endl;
+
     //}
         //else if(iteration_type == "MC") {
         //if (my_rank == 0) ofile.open(outfilename);
@@ -132,10 +134,11 @@ int main(int argc, char* argv[])
                 average[0] += E;    average[1] += E*E; //should be += (maybe?)
                 average[2] += M;    average[3] += M*M; average[4] += fabs(M);
 //                cout << "average[1]: " << average[0] << endl;
-                //output(n_spins, cycles, temperature, average);
+                output(n_spins, cycles, temperature, average);
             }
             // print results
             //output(n_spins, mcs, temperature, average);
+
     //}
 
         for( int i =0; i < 5; i++){
@@ -217,7 +220,7 @@ void initialize(int n_spins, double temperature, int **spin_matrix,
     }
 
 
-    // setup initial energy
+    // setup initial energy,
     for(int y =0; y < n_spins; y++) {
         for (int x= 0; x < n_spins; x++){
             E -=  (double) spin_matrix[y][x]*
@@ -312,7 +315,7 @@ void output(int n_spins, int mcs, double temperature, double *total_average)
     double Mvariance = (M2total_average - Mabstotal_average*Mabstotal_average)/n_spins/n_spins; // Exercise  e)
     ofile << setiosflags(ios::showpoint | ios::uppercase);
     ofile << setw(15) << setprecision(8) << temperature; //T
-    ofile << setw(15) << setprecision(8) << Etotal_average/n_spins/n_spins; //<E>
+    ofile << setw(15) << setprecision(8) << Etotal_average; //n_spins/n_spins; //<E>
     ofile << setw(15) << setprecision(8) << Evariance/temperature/temperature; //C_V
     ofile << setw(15) << setprecision(8) << Mtotal_average/n_spins/n_spins; //<M>
     ofile << setw(15) << setprecision(8) << Mvariance/temperature; //chi
