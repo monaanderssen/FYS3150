@@ -73,15 +73,15 @@ int main(int argc, char* argv[])
 
     //  if (my_rank == 0 && argc > 1) {
         outfilename=argv[1];
-    //    ofile.open(outfilename);
+        if(my_rank == 0) ofile.open(outfilename);
     //}
 
     //    Read in initial values such as size of lattice, temp and cycles
         matrix_type = "ordered"; // random or ordered
-        mcs = 100000;
+        mcs = 1000000;
         n_spins = 40;
         initial_temp = 2.0;
-        final_temp = 2.3;
+        final_temp = 2.6;
         temp_step = 0.01;
 
 
@@ -91,8 +91,8 @@ int main(int argc, char* argv[])
     double  TimeStart, TimeEnd, TotalTime;
 
     //if (iteration_type=="T") {
-        ofile.open(outfilename+to_string(my_rank));
-        if (!ofile.is_open()) cout << "could not open file " << outfilename+to_string(my_rank) << endl;
+//        ofile.open(outfilename+to_string(my_rank));
+//        if (!ofile.is_open()) cout << "could not open file " << outfilename+to_string(my_rank) << endl;
     //}
         //else if(iteration_type == "MC") {
         //if (my_rank == 0) ofile.open(outfilename);
@@ -135,25 +135,25 @@ int main(int argc, char* argv[])
                 //output(n_spins, cycles, temperature, average);
             }
             // print results
-            output(n_spins, mcs, temperature, average);
-        n++;
-        }
+            //output(n_spins, mcs, temperature, average);
     //}
 
-//        for( int i =0; i < 5; i++){
-//            MPI_Reduce(&average[i], &total_average[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-//        }
-//        // print results
+        for( int i =0; i < 5; i++){
+            MPI_Reduce(&average[i], &total_average[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        }
+        // print results
 
-//        if ( my_rank == 0) {
-//            output(n_spins, mcs, temperature, total_average);
-//        }
-//    }
+        if ( my_rank == 0) {
+            output(n_spins, mcs*numprocs, temperature, total_average);
+        }
+
+        n++;
+        }
 
 
 
     free_matrix((void **) spin_matrix); // free memory
-    ofile.close();  // close output file
+    if(my_rank == 0) ofile.close();  // close output file
 
     TimeEnd = MPI_Wtime();
     TotalTime = TimeEnd-TimeStart;

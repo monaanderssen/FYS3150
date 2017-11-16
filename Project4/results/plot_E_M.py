@@ -25,15 +25,16 @@ for line in file:
 
     counter += 1
 """
-"""
-#inputfiles = sys.argv[1:]
+
+inputfiles = sys.argv[1:]
 file = open(inputfiles[0], "r")
 length = 0
 for line in file: 
     length += 1
-length *= len(inputfiles)"""
+length *= len(inputfiles)
 
-#M_C = np.linspace(0,length,length)
+
+M_C = np.linspace(0,length,length)
 
 T = []
 E_average  = []
@@ -74,6 +75,7 @@ for line in file_o:
 
 #print len(E_random_average), len(M_C)
 
+
 """
 for files in inputfiles:
 	file = open(files, "r")
@@ -111,8 +113,9 @@ plt.axis([0,5000,0,1])
 plt.show()"""
 
 #HISTOGRAM
-plt.hist(E_random_average[2000:])
+plt.hist(E_random_average[5000:], 10)
 plt.show()
+
 """
 fig, ax = plt.subplots()
 plt.plot(T, E_variance)
