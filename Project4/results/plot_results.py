@@ -4,47 +4,47 @@ import sys
 import pylab
 from matplotlib.ticker import FormatStrFormatter
 
-input = sys.argv[1]
-file = open(input, "r")
 
-length = 0
-for line in file: 
-    length += 1
 
+input = sys.argv[1:]
+
+length = np.zeros(len(input))
+i = 0
+for input_ in input:
+	file = open(input_, "r")
+	for line in file: 
+	    length[i] += 1
+	print length[i]
+	i += 1
 print length
-T = np.zeros(length)
-E_average = np.zeros(length)
-C_V = np.zeros(length)
-M = np.zeros(length)
-chi = np.zeros(length)
-M_abs = np.zeros(length)
 
-file = open(input, "r")
-counter = 0
-for line in file: 
-    line_ = line.split()
-    T[counter] = float(line_[0])                
-    E_average[counter] = float(line_[1])
-    C_V[counter] = float(line_[2])
-    M[counter] = float(line_[3])
-    chi[counter] = float(line_[4])
-    M_abs[counter] = float(line_[5])
+def configurations_(length, filename):
+	cycles = np.zeros(length)
+	configurations = np.zeros(length)
+	
+	file = open(filename, "r")
+	counter = 0
+	for line in file: 
+	    line_ = line.split()
+	    cycles[counter] = float(line_[0])                
+	    configurations[counter] = float(line_[1])
 
-    counter += 1
+	    counter += 1
+	return cycles, configurations
 
-print C_V
+for i in range(len(input)):
+	cycles, configurations = configurations_(length[i], input[i])
 
-fig, ax = plt.subplots()
+	plt.plot(cycles, configurations, '-')
+	plt.hold('on')
 
-plt.plot(T[:], C_V[:], '-', color='black')
-
-plt.title('Heat capacity', fontsize = 22)
-plt.xlabel('T', fontsize = 22)
+plt.legend(['T = 1.0','T = 1.1','T = 1.2'])
+plt.title('Accepted configurations', fontsize = 22)
+plt.xlabel('Monte Carlo simulations', fontsize = 22)
 #ax.ticklabel_format(useOffset=False)
-plt.ylabel('C_V', fontsize = 22)# change to v_tilde(x)
+plt.ylabel('Configurations', fontsize = 22)# change to v_tilde(x)
 #pylab.xticks(fontsize=16)
 #pylab.yticks(fontsize=16)
 #plt.legend(['Sun'])
 plt.show()
-
 
