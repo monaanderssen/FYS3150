@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
                 average[0] += E;    average[1] += E*E; //should be += (maybe?)
                 average[2] += M;    average[3] += M*M; average[4] += fabs(M);
 //                cout << "average[1]: " << average[0] << endl;
-                output(n_spins, cycles, temperature, average);
+                //output(n_spins, cycles, temperature, average);
             }
             // print results
             //output(n_spins, mcs, temperature, average);
