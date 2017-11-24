@@ -32,7 +32,7 @@ void StatisticsSampler::sample(System &system)
     sampleKineticEnergy(system);
     samplePotentialEnergy(system);
     sampleTemperature(system);
-    sampleDensity(system);
+    //sampleDensity(system);
     saveToFile(system);
 }
 
@@ -64,7 +64,10 @@ void StatisticsSampler::sampleTemperature(System &system)
     // Hint: reuse the kinetic energy that we already calculated
 }
 
-void StatisticsSampler::sampleDensity(System &system)
-{
-
+void StatisticsSampler::sampleDensity(System &system, int N_x, int N_y, int N_z){
+    m_density = 0.0;
+    double m_b = system.b();
+    for(Atom *atom : system.atoms()) {
+        m_density += (atom->mass())/(m_b*m_b*m_b*N_x*N_y*N_z);
+    }
 }

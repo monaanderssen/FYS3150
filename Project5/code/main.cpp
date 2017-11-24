@@ -14,7 +14,8 @@ using namespace std;
 int main(int numberOfArguments, char **argumentList)
 {
     int numberOfUnitCells = 5;
-    double initialTemperature = UnitConverter::temperatureFromSI(300.0); // measured in Kelvin
+    int N_x = 4; int N_y= 4; int N_z = 4;
+    double initialTemperature = UnitConverter::temperatureFromSI(600.0); // measured in Kelvin
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
     // If a first argument is provided, it is the number of unit cells
@@ -33,14 +34,16 @@ int main(int numberOfArguments, char **argumentList)
     cout << "One unit of temperature is " << UnitConverter::temperatureToSI(1.0) << " K" << endl;
 
     System system;
-    system.createFCCLatticeCrystalStructure(numberOfUnitCells, latticeConstant, initialTemperature);
+    system.createFCCLatticeCrystalStructure(numberOfUnitCells, latticeConstant, initialTemperature, N_x, N_y, N_z);
     system.potential().setEpsilon(1.0);
     system.potential().setSigma(1.0);
 
     system.removeTotalMomentum();
 
     StatisticsSampler statisticsSampler;
-    IO movie("movie.xyz"); // To write the state to file
+    statisticsSampler.sampleDensity(system, N_x, N_y, N_z);
+    cout << "Density of the system: " << statisticsSampler.density() << endl;
+    IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
 
     cout << setw(20) << "Timestep" <<
             setw(20) << "Time" <<

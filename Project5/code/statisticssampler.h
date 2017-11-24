@@ -22,7 +22,7 @@ public:
     void samplePotentialEnergy(System &system);
     void sampleTotalMomentum(System &system);
     void sampleTemperature(System &system);
-    void sampleDensity(System &system);
+    void sampleDensity(System &system, int N_x, int N_y, int N_z);
     double kineticEnergy() { return m_kineticEnergy; }
     double potentialEnergy() { return m_potentialEnergy; }
     double totalEnergy() { return m_kineticEnergy+m_potentialEnergy; }

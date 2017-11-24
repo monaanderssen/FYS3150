@@ -17,6 +17,7 @@ private:
     LennardJones m_potential;
     double m_time = 0;
     int m_steps = 0;
+    double m_b = 0.0;
     int m_numberOfAtoms;
 
 
@@ -24,7 +25,7 @@ public:
     System();
     ~System();
     void createFCCLattice(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature);
-    void createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature);
+    void createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature, int N_x, int N_y, int N_z);
     void applyPeriodicBoundaryConditions();
     void removeTotalMomentum();
     void calculateForces();
@@ -42,5 +43,7 @@ public:
     VelocityVerlet &integrator() { return m_integrator; }
     int steps() { return m_steps; }
     void setSteps(int steps) { m_steps = steps; }
+    double b() {return m_b;}
+    int numberOfAtoms() {return m_numberOfAtoms;}
 };
 #endif

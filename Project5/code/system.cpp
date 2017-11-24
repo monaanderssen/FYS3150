@@ -25,8 +25,8 @@ System::~System()
 void System::applyPeriodicBoundaryConditions() {
     for(Atom *atom : m_atoms) {
         for(int i=0; i<3; i++){
-            if (atom->position[i] <  -m_systemSize[i] * 0.5) atom->position[i] = atom->position[i] + m_systemSize[i];
-            if (atom->position[i] >=  m_systemSize[i] * 0.5) atom->position[i] = atom->position[i] - m_systemSize[i];
+            if (atom->position[i] <  0) atom->position[i] = atom->position[i] + m_systemSize[i];
+            else if (atom->position[i] >=  m_systemSize[i]) atom->position[i] = atom->position[i] - m_systemSize[i];
         }
     }
 }
@@ -66,21 +66,26 @@ void System::createFCCLattice(int numberOfUnitCellsEachDimension, double lattice
     setSystemSize(vec3(10, 10, 10)); // Remember to set the correct system size!
 }
 
-void System::createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature) {
-    double b = 1.0;
-    arma::vec x = {0, b/2.0, 0, b/2};
-    arma::vec y = {0., b/2., b/2., 0.};
-    arma::vec z = {0.,0.,b/2.,b/2.};
-    for(int i=0; i<x.size(); i++) {
-        Atom *atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
-
-        atom->position.set(x[i],y[i],z[i]);
-        atom->resetVelocityMaxwellian(temperature);
-        m_atoms.push_back(atom);
+void System::createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature, int N_x, int N_y, int N_z) {
+    m_b = latticeConstant;
+    arma::vec x = {0., m_b/2.0, 0., m_b/2.};
+    arma::vec y = {0., m_b/2., m_b/2., 0.};
+    arma::vec z = {0., 0., m_b/2., m_b/2.};
+    for(int i = 0; i < N_x; i++){
+        for(int j = 0; j < N_y; j++) {
+            for(int k = 0; k < N_z; k++) {
+                for(int l=0; l<x.size(); l++) {
+                    Atom *atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
+                    atom->position.set(x[l]+i*m_b,y[l]+j*m_b,z[l]+k*m_b);
+                    atom->resetVelocityMaxwellian(temperature);
+                    m_atoms.push_back(atom);
+                }
+            }
+        }
     }
     cout << m_atoms.size() << endl;
     m_numberOfAtoms = m_atoms.size();
-    setSystemSize(vec3(10, 10, 10)); // Remember to set the correct system size!
+    setSystemSize(vec3(m_b*N_x, m_b*N_y, m_b*N_z)); // Remember to set the correct system size!
 }
 
 void System::calculateForces() {
