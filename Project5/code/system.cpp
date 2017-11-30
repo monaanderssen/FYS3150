@@ -79,6 +79,15 @@ void System::createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension
                     atom->position.set(x[l]+i*m_b,y[l]+j*m_b,z[l]+k*m_b);
                     atom->resetVelocityMaxwellian(temperature);
                     m_atoms.push_back(atom);
+    /*
+                    Atom *atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
+                    atom->position.set(9*m_b,10*m_b,10*m_b);
+                    atom->velocity.set(0,0,0);
+                    m_atoms.push_back(atom);
+                    atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
+                    atom->position.set(10*m_b,10*m_b,10*m_b);
+                    atom->velocity.set(0,0,0);
+                    m_atoms.push_back(atom);*/
                 }
             }
         }

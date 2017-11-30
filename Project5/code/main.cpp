@@ -15,7 +15,7 @@ int main(int numberOfArguments, char **argumentList)
 {
     int numberOfUnitCells = 5;
     int N_x = 4; int N_y= 4; int N_z = 4;
-    double initialTemperature = UnitConverter::temperatureFromSI(600.0); // measured in Kelvin
+    double initialTemperature = UnitConverter::temperatureFromSI(1200.0); // measured in Kelvin
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
     // If a first argument is provided, it is the number of unit cells
@@ -35,15 +35,20 @@ int main(int numberOfArguments, char **argumentList)
 
     System system;
     system.createFCCLatticeCrystalStructure(numberOfUnitCells, latticeConstant, initialTemperature, N_x, N_y, N_z);
-    system.potential().setEpsilon(1.0);
-    system.potential().setSigma(1.0);
+    system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
+    system.potential().setSigma(UnitConverter::lengthFromAngstroms(3.405));
 
     system.removeTotalMomentum();
 
     StatisticsSampler statisticsSampler;
+    statisticsSampler.sampleTemperature(system);
+
+    //system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
     statisticsSampler.sampleDensity(system, N_x, N_y, N_z);
     cout << "Density of the system: " << statisticsSampler.density() << endl;
-    IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
+
+    IO movie("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/movie.xyz");
+    //IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
 
     cout << setw(20) << "Timestep" <<
             setw(20) << "Time" <<
@@ -51,19 +56,19 @@ int main(int numberOfArguments, char **argumentList)
             setw(20) << "KineticEnergy" <<
             setw(20) << "PotentialEnergy" <<
             setw(20) << "TotalEnergy" << endl;
-    for(int timestep=0; timestep<10000; timestep++) {
+    for(int timestep=0; timestep<100000; timestep++) {
         system.step(dt);
         statisticsSampler.sample(system);
         if( timestep % 100 == 0 ) {
             // Print the timestep every 100 timesteps
             cout << setw(20) << system.steps() <<
                     setw(20) << system.time() <<
-                    setw(20) << statisticsSampler.temperature() <<
+                    setw(20) << UnitConverter::temperatureToSI(statisticsSampler.temperature() ) <<
                     setw(20) << statisticsSampler.kineticEnergy() <<
                     setw(20) << statisticsSampler.potentialEnergy() <<
                     setw(20) << statisticsSampler.totalEnergy() << endl;
         }
-        movie.saveState(system);
+        if( timestep % 10 == 0 )  movie.saveState(system);
     }
 
     movie.close();
