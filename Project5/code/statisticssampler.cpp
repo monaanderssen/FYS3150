@@ -20,7 +20,9 @@ void StatisticsSampler::saveToFile(System &system)
     // Save the statistical properties for each timestep for plotting etc.
     // First, open the file if it's not open already
     if(!m_file.good()) {
-        m_file.open("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/statistics.txt", ofstream::out);
+        //Mona:/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/statistics.txt
+        //Peder: /home/pederbh/UiO/FYS4150/FYS3150/Project5/results/statistics.txt
+        m_file.open("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/statistics.txt", ofstream::out);
         // If it's still not open, something bad happened...
         if(!m_file.good()) {
             cout << "Error, could not open statistics.txt" << endl;
@@ -86,9 +88,11 @@ void StatisticsSampler::sampleDensity(System &system, int N_x, int N_y, int N_z)
 
 void StatisticsSampler::sampleDiffusionConstant(System &system){
     double temp_diffusion = 0;
+    m_diffusionConstant = 0;
     for(int i=0; i < system.numberOfAtoms(); i++){
         Atom* atom = system.atoms()[i];
         temp_diffusion += (atom->m_distanceBeforePBC * atom->m_distanceBeforePBC)/(6*system.time());
+
     m_diffusionConstant = temp_diffusion/system.numberOfAtoms();
     }
 }

@@ -22,13 +22,15 @@ for line in file:
 	E_tot.append(float(line_[5]))
 	D.append(float(line_[6]))
 
-plt.plot(t, T)
-plt.show()
+#plt.plot(t, T)
+#plt.show()
 
-plt.plot(t, E_k, "b", t, E_p, "r", t, E_tot, "k")
-plt.show()
+#plt.plot(t, E_k, "b", t, E_p, "r", t, E_tot, "k")
+#plt.show()
 
-plt.plot(t, D)
+plt.plot(dt, D)
+plt.title('Diffusion')
+plt.xlabel('Time [seconds]')
 plt.show()
 
 

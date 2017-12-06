@@ -47,8 +47,8 @@ int main(int numberOfArguments, char **argumentList)
     statisticsSampler.sampleDensity(system, N_x, N_y, N_z);
     cout << "Density of the system: " << statisticsSampler.density() << endl;
 
-    IO movie("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/movie.xyz");
-    //IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
+    //IO movie("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/movie.xyz");
+    IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
 
     cout << setw(20) << "Timestep" <<
             setw(20) << "Time" <<
