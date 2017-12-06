@@ -14,6 +14,7 @@ private:
     vec3 m_totalMomentum = {0,0,0};
     double m_temperature = 0;
     double m_density = 0;
+    double m_diffusionConstant;
 public:
     StatisticsSampler();
     void saveToFile(System &system);
@@ -23,11 +24,13 @@ public:
     void sampleTotalMomentum(System &system);
     void sampleTemperature(System &system);
     void sampleDensity(System &system, int N_x, int N_y, int N_z);
+    void sampleDiffusionConstant(System &system);
     double kineticEnergy() { return m_kineticEnergy; }
     double potentialEnergy() { return m_potentialEnergy; }
     double totalEnergy() { return m_kineticEnergy+m_potentialEnergy; }
     double temperature() { return m_temperature; }
     double density() { return m_density; }
+    double diffusionConstant() { return m_diffusionConstant; }
     vec3 totalMomentum(){ return m_totalMomentum; }
 };
 #endif

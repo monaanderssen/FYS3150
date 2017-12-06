@@ -21,6 +21,15 @@ System::~System()
     }
     m_atoms.clear();
 }
+/*
+void System::applyPeriodicBoundaryConditions() {
+    for(Atom *atom : m_atoms) {
+        for(int i=0; i<3; i++){
+            if (atom->position[i] <  0) atom->position[i] = atom->position[i] + m_systemSize[i];
+            else if (atom->position[i] >=  m_systemSize[i]) atom->position[i] = atom->position[i] - m_systemSize[i];
+        }
+    }
+}*/
 
 void System::applyPeriodicBoundaryConditions() {
     for(Atom *atom : m_atoms) {
@@ -77,6 +86,7 @@ void System::createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension
                 for(int l=0; l<x.size(); l++) {
                     Atom *atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
                     atom->position.set(x[l]+i*m_b,y[l]+j*m_b,z[l]+k*m_b);
+                    atom->initialPosition = atom->position;
                     atom->resetVelocityMaxwellian(temperature);
                     m_atoms.push_back(atom);
     /*
