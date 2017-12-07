@@ -15,7 +15,7 @@ int main(int numberOfArguments, char **argumentList)
 {
     int numberOfUnitCells = 5;
     int N_x = 4; int N_y= 4; int N_z = 4;
-    double initialTemperature = UnitConverter::temperatureFromSI(500); // measured in Kelvin
+    double initialTemperature = UnitConverter::temperatureFromSI(1000); // measured in Kelvin
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
     // If a first argument is provided, it is the number of unit cells
@@ -57,10 +57,10 @@ int main(int numberOfArguments, char **argumentList)
             setw(20) << "PotentialEnergy" <<
             setw(20) << "TotalEnergy" <<
             setw(20) << "Diffusion constant" << endl;
-    for(int timestep=0; timestep<1000; timestep++) {
+    for(int timestep=0; timestep<10000; timestep++) {
         system.step(dt);
         statisticsSampler.sample(system);
-        /*if( timestep % 100 == 0 ) {
+        if( timestep % 100 == 0 ) {
             // Print the timestep every 100 timesteps
             cout << setw(20) << system.steps() <<
                     setw(20) << system.time() <<
@@ -69,8 +69,9 @@ int main(int numberOfArguments, char **argumentList)
                     setw(20) << statisticsSampler.potentialEnergy() <<
                     setw(20) << statisticsSampler.totalEnergy() <<
                     setw(20) << statisticsSampler.diffusionConstant() << endl;
-        }*/
-        if( timestep % 10 == 0 )  movie.saveState(system);
+        }
+        //if( timestep % 10 == 0 )  movie.saveState(system);
+        movie.saveState(system);
     }
 
     movie.close();

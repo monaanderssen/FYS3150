@@ -11,6 +11,7 @@ public:
     vec3 velocity;
     vec3 force;
     vec3 initialPosition;
+    vec3 m_distanceTravelled;
 
     Atom(double mass);
     void resetForce();
@@ -18,6 +19,7 @@ public:
 
     double mass() { return m_mass; }
     double m_distanceBeforePBC;
+    double m_valueDistanceTravelled;
     double distanceBeforePBC() { return m_distanceBeforePBC; }
     void setMass(double mass) { m_mass = mass; }
 };

@@ -15,6 +15,7 @@ private:
     double m_temperature = 0;
     double m_density = 0;
     double m_diffusionConstant;
+    double m_r2;
 public:
     StatisticsSampler();
     void saveToFile(System &system);
