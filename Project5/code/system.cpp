@@ -24,22 +24,22 @@ System::~System()
 
 void System::applyPeriodicBoundaryConditions() {
     for(Atom *atom : m_atoms) {
-        double r = (atom->position - atom->initialPosition).length();
+        vec3 r = atom->position - atom->initialPosition;
         atom->m_distanceBeforePBC = r;
         for(int i=0; i<3; i++){
             if (atom->position[i] <  0) {
                 atom->position[i] = atom->position[i] + m_systemSize[i];
-                atom->m_distanceTravelled[i] -= m_systemSize[i];
+                atom->m_distanceTravelled[i] += m_systemSize[i];
             }
             else if (atom->position[i] >=  m_systemSize[i]){
                 atom->position[i] = atom->position[i] - m_systemSize[i];
-                atom->m_distanceTravelled[i] += m_systemSize[i];
+                atom->m_distanceTravelled[i] -= m_systemSize[i];
             }
             else {
                 atom->m_distanceTravelled[i] = 0;
             }
         }
-        atom->m_valueDistanceTravelled = atom->m_distanceTravelled.length();
+        //atom->m_valueDistanceTravelled = atom->m_distanceTravelled.length();
     }
 }
 

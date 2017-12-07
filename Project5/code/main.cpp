@@ -57,10 +57,10 @@ int main(int numberOfArguments, char **argumentList)
             setw(20) << "PotentialEnergy" <<
             setw(20) << "TotalEnergy" <<
             setw(20) << "Diffusion constant" << endl;
-    for(int timestep=0; timestep<10000; timestep++) {
+    for(int timestep=0; timestep<1e6; timestep++) {
         system.step(dt);
         statisticsSampler.sample(system);
-        if( timestep % 100 == 0 ) {
+        if( timestep % 10000 == 0 ) {
             // Print the timestep every 100 timesteps
             cout << setw(20) << system.steps() <<
                     setw(20) << system.time() <<

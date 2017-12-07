@@ -24,7 +24,7 @@ for line in file:
     D.append(float(line_[6])) # we divide by time in the program and needs to include this factor. The other factor is for the length squared
     r2.append(float(line_[7]))
 
-plt.plot(r2, 'o')
+plt.plot(r2)
 plt.show()
 
 plt.plot(time, T)
@@ -33,7 +33,7 @@ plt.show()
 plt.plot(time, E_k, "b", time, E_p, "r", time, E_tot, "k")
 plt.show()
 
-plt.plot(numberOfIterations, D)
+plt.plot(time, D)
 plt.title('Diffusion')
 plt.xlabel('Time [seconds]')
 plt.ylabel('Diffusion [m^2/s]')

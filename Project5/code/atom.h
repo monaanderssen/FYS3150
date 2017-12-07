@@ -18,9 +18,9 @@ public:
     void resetVelocityMaxwellian(double temperature);
 
     double mass() { return m_mass; }
-    double m_distanceBeforePBC;
-    double m_valueDistanceTravelled;
-    double distanceBeforePBC() { return m_distanceBeforePBC; }
+    vec3 m_distanceBeforePBC;
+    vec3 m_DistanceTravelled;
+    //double distanceBeforePBC() { return m_distanceBeforePBC; }
     void setMass(double mass) { m_mass = mass; }
 };
 #endif
