@@ -15,7 +15,7 @@ int main(int numberOfArguments, char **argumentList)
 {
     int numberOfUnitCells = 5;
     int N_x = 4; int N_y= 4; int N_z = 4;
-    double initialTemperature = UnitConverter::temperatureFromSI(15); // measured in Kelvin
+    double initialTemperature = UnitConverter::temperatureFromSI(500); // measured in Kelvin
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
     // If a first argument is provided, it is the number of unit cells

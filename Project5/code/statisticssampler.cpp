@@ -31,12 +31,12 @@ void StatisticsSampler::saveToFile(System &system)
     }
     //cout << system.steps() << endl;
     m_file << setw(20) << system.steps() <<
-            setw(20) << system.time() <<
+            setw(20) << system.time()*1.00224e-13 << // seconds
             setw(20) << UnitConverter::temperatureToSI(temperature() ) <<
             setw(20) << m_kineticEnergy <<
             setw(20) << m_potentialEnergy <<
             setw(20) << totalEnergy() <<
-            setw(20) << m_diffusionConstant << endl;
+            setw(20) << m_diffusionConstant*(1e-20/1.00224e-13) << endl; //m²/seconds
 }
 
 void StatisticsSampler::sample(System &system)
@@ -82,7 +82,7 @@ void StatisticsSampler::sampleDensity(System &system, int N_x, int N_y, int N_z)
     m_density = 0.0;
     double m_b = system.b();
     for(Atom *atom : system.atoms()) {
-        m_density += 10000*(atom->mass())/(m_b*m_b*m_b*N_x*N_y*N_z);
+        m_density += (atom->mass())/(m_b*m_b*m_b*N_x*N_y*N_z);
     }
 }
 
