@@ -47,18 +47,13 @@ void System::removeTotalMomentum() {
     // Find the total momentum and remove momentum equally on each atom so the total momentum becomes zero.
     statisticsSampler.sampleTotalMomentum(*this);
     vec3 m_totalMomentum = statisticsSampler.totalMomentum();
-    //m_totalMomentum = statisticsSampler.sampleTotalMomentum(*this);
-    cout << m_totalMomentum << endl;
     for(Atom *atom : m_atoms){
         for(int i=0; i<3; i++){
-            //cout << atom -> velocity[i];
             atom->velocity[i] -= m_totalMomentum[i]/m_numberOfAtoms/atom->mass();
-            //cout << atom -> velocity[i] << endl;
         }
     }
     statisticsSampler.sampleTotalMomentum(*this);
     m_totalMomentum = statisticsSampler.totalMomentum();
-    cout << m_totalMomentum << endl;
 }
 
 void System::createFCCLattice(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature) {
