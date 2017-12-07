@@ -82,17 +82,16 @@ void StatisticsSampler::sampleDensity(System &system, int N_x, int N_y, int N_z)
     m_density = 0.0;
     double m_b = system.b();
     for(Atom *atom : system.atoms()) {
-        m_density += (atom->mass())/(m_b*m_b*m_b*N_x*N_y*N_z);
+        m_density += 10000*(atom->mass())/(m_b*m_b*m_b*N_x*N_y*N_z);
     }
 }
 
 void StatisticsSampler::sampleDiffusionConstant(System &system){
-    double temp_diffusion = 0;
     m_diffusionConstant = 0;
     for(int i=0; i < system.numberOfAtoms(); i++){
         Atom* atom = system.atoms()[i];
-        temp_diffusion += (atom->m_distanceBeforePBC * atom->m_distanceBeforePBC)/(6*system.time());
+        m_diffusionConstant += (atom->m_distanceBeforePBC * atom->m_distanceBeforePBC)/(6*system.time());
 
-    m_diffusionConstant = temp_diffusion/system.numberOfAtoms();
+    m_diffusionConstant = m_diffusionConstant/system.numberOfAtoms();
     }
 }
