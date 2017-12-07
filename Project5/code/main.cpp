@@ -15,15 +15,21 @@ int main(int numberOfArguments, char **argumentList)
 {
     int numberOfUnitCells = 5;
     int N_x = 4; int N_y= 4; int N_z = 4;
-    double initialTemperature = UnitConverter::temperatureFromSI(1000); // measured in Kelvin
+    int max_time;
+    double input_temperature;
+    if(numberOfArguments > 1) max_time = atoi(argumentList[1]);
+    if(numberOfArguments > 2) input_temperature = atof(argumentList[2]);
+    double initialTemperature = UnitConverter::temperatureFromSI(input_temperature); // measured in Kelvin
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
     // If a first argument is provided, it is the number of unit cells
-    if(numberOfArguments > 1) numberOfUnitCells = atoi(argumentList[1]);
+    //if(numberOfArguments > 1) numberOfUnitCells = atoi(argumentList[1]);
+    //if(numberOfArguments > 1) max_time = atoi(argumentList[1]);
     // If a second argument is provided, it is the initial temperature (measured in kelvin)
-    if(numberOfArguments > 2) initialTemperature = UnitConverter::temperatureFromSI(atof(argumentList[2]));
+    //if(numberOfArguments > 2) initialTemperature = UnitConverter::temperatureFromSI(atof(argumentList[2]));
+    //if(numberOfArguments > 2) input_temperature = atof(argv[2]);
     // If a third argument is provided, it is the lattice constant determining the density (measured in angstroms)
-    if(numberOfArguments > 3) latticeConstant = UnitConverter::lengthFromAngstroms(atof(argumentList[3]));
+    //if(numberOfArguments > 3) latticeConstant = UnitConverter::lengthFromAngstroms(atof(argumentList[3]));
 
     double dt = UnitConverter::timeFromSI(1e-15); // Measured in seconds.
 
@@ -49,7 +55,7 @@ int main(int numberOfArguments, char **argumentList)
 
     //IO movie("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/movie.xyz");
     IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
-
+    cout << "max" << max_time << endl;
     cout << setw(20) << "Timestep" <<
             setw(20) << "Time" <<
             setw(20) << "Temperature" <<
@@ -57,10 +63,10 @@ int main(int numberOfArguments, char **argumentList)
             setw(20) << "PotentialEnergy" <<
             setw(20) << "TotalEnergy" <<
             setw(20) << "Diffusion constant" << endl;
-    for(int timestep=0; timestep<1e6; timestep++) {
+    for(int timestep=0; timestep<(int)max_time; timestep++) {
         system.step(dt);
         statisticsSampler.sample(system);
-        if( timestep % 10000 == 0 ) {
+        if( timestep % 10 == 0 ) {
             // Print the timestep every 100 timesteps
             cout << setw(20) << system.steps() <<
                     setw(20) << system.time() <<
