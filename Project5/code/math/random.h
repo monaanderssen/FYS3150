@@ -1,4 +1,3 @@
-
 #ifndef RANDOM_H
 #define RANDOM_H
 #include <random>
@@ -9,7 +8,7 @@
 static std::mt19937 generator(time(NULL));
 #else
 // this generator is now thread safe so we can use it with OpenMP.
-static thread_local std::mt19937 generator;
+static thread_local std::mt19937 generator(time(NULL));
 #endif
 
 class Random
