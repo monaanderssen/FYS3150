@@ -72,6 +72,8 @@ void System::createFCCLattice(int numberOfUnitCellsEachDimension, double lattice
 
 void System::createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension, double latticeConstant, double temperature, int N_x, int N_y, int N_z) {
     m_b = latticeConstant;
+    Random::randomSeed();
+    Random::nextGaussian(1.0, 0.5);
     arma::vec x = {0., m_b/2.0, 0., m_b/2.};
     arma::vec y = {0., m_b/2., m_b/2., 0.};
     arma::vec z = {0., 0., m_b/2., m_b/2.};
@@ -80,11 +82,9 @@ void System::createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension
             for(int k = 0; k < N_z; k++) {
                 for(int l=0; l<x.size(); l++) {
                     Atom *atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
-                    Random::randomSeed();
                     atom->position.set(x[l]+i*m_b,y[l]+j*m_b,z[l]+k*m_b);
                     atom->realPosition.set(x[l]+i*m_b,y[l]+j*m_b,z[l]+k*m_b);
                     atom->initialPosition = atom->position;
-                    //atom->velocity.set(Random::nextGaussian(0,0.5),Random::nextGaussian(1,0.5),Random::nextGaussian(1,0.5));
                     atom->resetVelocityMaxwellian(temperature);
                     m_atoms.push_back(atom);
     /*
