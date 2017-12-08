@@ -15,7 +15,7 @@ for line in file:
 
 plt.plot(T, D, 'o')
 plt.grid('on')
-plt.title('Diffusion')
+plt.title('Diffusion coefficient')
 plt.xlabel('Equilibrium temperature [K]')
 plt.ylabel('Diffusion [m^2/s]')
 plt.show()

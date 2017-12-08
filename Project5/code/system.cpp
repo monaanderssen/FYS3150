@@ -35,9 +35,6 @@ void System::applyPeriodicBoundaryConditions() {
                 atom->position[i] = atom->position[i] - m_systemSize[i];
                 atom->m_distanceTravelled[i] += m_systemSize[i];
             }
-            else {
-                atom->m_distanceTravelled[i] = 0;
-            }
         }
         //atom->m_valueDistanceTravelled = atom->m_distanceTravelled.length();
     }
@@ -83,10 +80,11 @@ void System::createFCCLatticeCrystalStructure(int numberOfUnitCellsEachDimension
             for(int k = 0; k < N_z; k++) {
                 for(int l=0; l<x.size(); l++) {
                     Atom *atom = new Atom(UnitConverter::massFromSI(6.63352088e-26));
-                    //Random::randomSeed(); ???
-                    //Random::nextGaussian(1,0.5);
+                    Random::randomSeed();
                     atom->position.set(x[l]+i*m_b,y[l]+j*m_b,z[l]+k*m_b);
+                    atom->realPosition.set(x[l]+i*m_b,y[l]+j*m_b,z[l]+k*m_b);
                     atom->initialPosition = atom->position;
+                    //atom->velocity.set(Random::nextGaussian(0,0.5),Random::nextGaussian(1,0.5),Random::nextGaussian(1,0.5));
                     atom->resetVelocityMaxwellian(temperature);
                     m_atoms.push_back(atom);
     /*

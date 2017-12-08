@@ -24,6 +24,7 @@ public:
     void sampleTRatio(System &system);
     void saveDiffusionDifferentTemperatures(System &system);
     void sample(System &system);
+    void tRatioToFile(System &system);
     void sampleKineticEnergy(System &system);
     void samplePotentialEnergy(System &system);
     void sampleTotalMomentum(System &system);

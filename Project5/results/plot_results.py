@@ -29,7 +29,7 @@ p = np.polyfit(numberOfIterations, r2, 1)
 print p
 r2_new = np.polyval(p, numberOfIterations)
 
-plt.plot(numberOfIterations, r2, numberOfIterations, r2_new)
+plt.plot(numberOfIterations, r2)
 plt.title('<r^2(t)>')
 plt.show()
 

@@ -46,10 +46,13 @@ int main(int numberOfArguments, char **argumentList)
         double initialTemperature = UnitConverter::temperatureFromSI(current_temperature); // measured in Kelvin
         System system;
         system.createFCCLatticeCrystalStructure(numberOfUnitCells, latticeConstant, initialTemperature, N_x, N_y, N_z);
-        system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
+        system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8)); //119.8 or 1?
         system.potential().setSigma(UnitConverter::lengthFromAngstroms(3.405));
 
         system.removeTotalMomentum();
+        double diffusion_average = 0;
+        double temperature_average = 0;
+        double average_counter = 0;
 
         StatisticsSampler statisticsSampler;
         statisticsSampler.sampleTemperature(system);
@@ -85,13 +88,20 @@ int main(int numberOfArguments, char **argumentList)
             //if( timestep % 10 == 0 )  movie.saveState(system);
             movie.saveState(system);
 
-            if( timestep == (max_time - 1) ){ //last iteration, write diffusion constant to file
-                string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
-                ofstream diffusionFile;
-                diffusionFile.open(path, std::ios::app);
-                diffusionFile << setw(20) << UnitConverter::temperatureToSI(statisticsSampler.temperature()) << " " << UnitConverter::diffusionToSI(statisticsSampler.diffusionConstant()) << endl;
-                diffusionFile.close();
-                cout << "Wrote to diffusion file." << endl;
+            if( timestep > (max_time - 50) ){ //last 100 iterations, write diffusion constant to file
+                diffusion_average += statisticsSampler.diffusionConstant();
+                temperature_average += statisticsSampler.temperature();
+                average_counter += 1;
+                if( timestep == (max_time - 1)){
+                    string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
+                    diffusion_average /= average_counter;
+                    temperature_average /= average_counter;
+                    ofstream diffusionFile;
+                    diffusionFile.open(path, std::ios::app);
+                    diffusionFile << setw(20) << UnitConverter::temperatureToSI(temperature_average) << " " << UnitConverter::diffusionToSI(diffusion_average) << endl;
+                    diffusionFile.close();
+                    cout << "Wrote to diffusion file." << endl;
+                }
             }
         }
 
