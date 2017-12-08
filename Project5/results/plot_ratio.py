@@ -22,7 +22,7 @@ for filename in sorted(glob.glob(os.path.join(path, '*.txt'))):
             time.append(float(line_[0]))
             ratio.append(float(line_[1]))
 
-        if counter > 0:
+        if counter > 25:
             plt.plot(time, ratio)
             plt.hold('on')
             plt.legend(legend_name)
