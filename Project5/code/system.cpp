@@ -29,11 +29,11 @@ void System::applyPeriodicBoundaryConditions() {
         for(int i=0; i<3; i++){
             if (atom->position[i] <  0) {
                 atom->position[i] = atom->position[i] + m_systemSize[i];
-                atom->m_distanceTravelled[i] += m_systemSize[i];
+                atom->m_distanceTravelled[i] -= m_systemSize[i];
             }
             else if (atom->position[i] >=  m_systemSize[i]){
                 atom->position[i] = atom->position[i] - m_systemSize[i];
-                atom->m_distanceTravelled[i] -= m_systemSize[i];
+                atom->m_distanceTravelled[i] += m_systemSize[i];
             }
             else {
                 atom->m_distanceTravelled[i] = 0;

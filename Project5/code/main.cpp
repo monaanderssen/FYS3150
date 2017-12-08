@@ -22,7 +22,7 @@ int main(int numberOfArguments, char **argumentList)
     if(numberOfArguments > 1) max_time = atoi(argumentList[1]);
     if(numberOfArguments > 2) input_temperature = atof(argumentList[2]);
     if(numberOfArguments > 3) max_temperature = atof(argumentList[3]);
-    double initialTemperature = UnitConverter::temperatureFromSI(input_temperature); // measured in Kelvin
+
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
     // If a first argument is provided, it is the number of unit cells
@@ -42,8 +42,8 @@ int main(int numberOfArguments, char **argumentList)
     cout << "One unit of mass is " << UnitConverter::massToSI(1.0) << " kg" << endl;
     cout << "One unit of temperature is " << UnitConverter::temperatureToSI(1.0) << " K" << endl;
 
-    for(float current_temperature = input_temperature; current_temperature < max_temperature; current_temperature++){
-
+    for(float current_temperature = input_temperature; current_temperature < max_temperature; current_temperature = current_temperature + 10){
+        double initialTemperature = UnitConverter::temperatureFromSI(current_temperature); // measured in Kelvin
         System system;
         system.createFCCLatticeCrystalStructure(numberOfUnitCells, latticeConstant, initialTemperature, N_x, N_y, N_z);
         system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
@@ -71,7 +71,7 @@ int main(int numberOfArguments, char **argumentList)
         for(int timestep=0; timestep<(int)max_time; timestep++) {
             system.step(dt);
             statisticsSampler.sample(system);
-            if( timestep % 100 == 0 ) {
+            if( timestep % 1000 == 0 ) {
                 // Print the timestep every 100 timesteps
                 cout << setw(20) << system.steps() <<
                         setw(20) << system.time() <<
@@ -90,7 +90,7 @@ int main(int numberOfArguments, char **argumentList)
                 diffusionFile.open(path, std::ios::app);
                 diffusionFile << setw(20) << UnitConverter::temperatureToSI(statisticsSampler.temperature()) << " " << UnitConverter::diffusionToSI(statisticsSampler.diffusionConstant()) << endl;
                 diffusionFile.close();
-                cout << "hei" << endl;
+                cout << "Wrote to diffusion file." << endl;
             }
         }
 

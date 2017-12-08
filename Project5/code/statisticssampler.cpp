@@ -109,10 +109,10 @@ void StatisticsSampler::sampleDiffusionConstant(System &system){
     for(int i=0; i < system.numberOfAtoms(); i++){
         Atom* atom = system.atoms()[i];
         r2_temp = (atom->m_distanceBeforePBC + atom->m_DistanceTravelled).length()*(atom->m_distanceBeforePBC + atom->m_DistanceTravelled).length();
-        //m_diffusionConstant += (r2_temp)/(6*system.time());
+        m_diffusionConstant += (r2_temp)/(6*system.time());
         r2 += r2_temp;
-    //m_diffusionConstant = m_diffusionConstant/system.numberOfAtoms();
-    m_diffusionConstant = r2_temp/(6*system.time());
+    m_diffusionConstant = m_diffusionConstant/system.numberOfAtoms();
+    //m_diffusionConstant = r2_temp/(6*system.time());
     m_r2 = r2/system.numberOfAtoms();
     }
 }
