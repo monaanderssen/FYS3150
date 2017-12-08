@@ -19,6 +19,7 @@ private:
 public:
     StatisticsSampler();
     void saveToFile(System &system);
+    void saveDiffusionDifferentTemperatures(System &system);
     void sample(System &system);
     void sampleKineticEnergy(System &system);
     void samplePotentialEnergy(System &system);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.4.1, 2017-12-07T19:26:29. -->
+<!-- Written by QtCreator 4.4.1, 2017-12-08T13:33:46. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -306,7 +306,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/pederbh/UiO/FYS4150/FYS3150/Project5/code/molecular-dynamics-fys3150.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
-    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">1000 1000</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">1000 100 103</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">molecular-dynamics-fys3150.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseTerminal">false</value>

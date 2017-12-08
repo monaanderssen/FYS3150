@@ -37,9 +37,24 @@ void StatisticsSampler::saveToFile(System &system)
             setw(20) << m_potentialEnergy <<
             setw(20) << totalEnergy() <<
             setw(20) << UnitConverter::diffusionToSI(m_diffusionConstant) <<
-            setw(20) << m_r2 << endl; //m²/seconds
+            setw(20) << m_r2 << endl; //m²
 }
 
+/*
+void StatisticsSampler::saveDiffusionDifferentTemperatures(System &system)
+{
+    if(!m_file.good()) {
+        //Mona:/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/statistics.txt
+        //Peder: /home/pederbh/UiO/FYS4150/FYS3150/Project5/results/statistics.txt
+        m_file.open("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/statistics_temp_" + m_temperature, ofstream::out);
+        // If it's still not open, something bad happened...
+        if(!m_file.good()) {
+            cout << "Error, could not open statistics.txt" << endl;
+            exit(1);
+        }
+    }
+}
+*/
 void StatisticsSampler::sample(System &system)
 {
     // Here you should measure different kinds of statistical properties and save it to a file.
@@ -94,9 +109,10 @@ void StatisticsSampler::sampleDiffusionConstant(System &system){
     for(int i=0; i < system.numberOfAtoms(); i++){
         Atom* atom = system.atoms()[i];
         r2_temp = (atom->m_distanceBeforePBC + atom->m_DistanceTravelled).length()*(atom->m_distanceBeforePBC + atom->m_DistanceTravelled).length();
-        m_diffusionConstant += (r2_temp)/(6*system.time());
+        //m_diffusionConstant += (r2_temp)/(6*system.time());
         r2 += r2_temp;
-    m_diffusionConstant = m_diffusionConstant/system.numberOfAtoms();
+    //m_diffusionConstant = m_diffusionConstant/system.numberOfAtoms();
+    m_diffusionConstant = r2_temp/(6*system.time());
     m_r2 = r2/system.numberOfAtoms();
     }
 }

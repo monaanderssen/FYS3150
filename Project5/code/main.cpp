@@ -11,14 +11,17 @@
 
 using namespace std;
 
+
 int main(int numberOfArguments, char **argumentList)
 {
+    remove("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
     int numberOfUnitCells = 5;
     int N_x = 4; int N_y= 4; int N_z = 4;
     int max_time;
-    double input_temperature;
+    double input_temperature, max_temperature;
     if(numberOfArguments > 1) max_time = atoi(argumentList[1]);
     if(numberOfArguments > 2) input_temperature = atof(argumentList[2]);
+    if(numberOfArguments > 3) max_temperature = atof(argumentList[3]);
     double initialTemperature = UnitConverter::temperatureFromSI(input_temperature); // measured in Kelvin
     double latticeConstant = UnitConverter::lengthFromAngstroms(5.26); // measured in angstroms
 
@@ -39,48 +42,59 @@ int main(int numberOfArguments, char **argumentList)
     cout << "One unit of mass is " << UnitConverter::massToSI(1.0) << " kg" << endl;
     cout << "One unit of temperature is " << UnitConverter::temperatureToSI(1.0) << " K" << endl;
 
-    System system;
-    system.createFCCLatticeCrystalStructure(numberOfUnitCells, latticeConstant, initialTemperature, N_x, N_y, N_z);
-    system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
-    system.potential().setSigma(UnitConverter::lengthFromAngstroms(3.405));
+    for(float current_temperature = input_temperature; current_temperature < max_temperature; current_temperature++){
 
-    system.removeTotalMomentum();
+        System system;
+        system.createFCCLatticeCrystalStructure(numberOfUnitCells, latticeConstant, initialTemperature, N_x, N_y, N_z);
+        system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
+        system.potential().setSigma(UnitConverter::lengthFromAngstroms(3.405));
 
-    StatisticsSampler statisticsSampler;
-    statisticsSampler.sampleTemperature(system);
+        system.removeTotalMomentum();
 
-    //system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
-    statisticsSampler.sampleDensity(system, N_x, N_y, N_z);
-    cout << "Density of the system: " << statisticsSampler.density() << endl;
+        StatisticsSampler statisticsSampler;
+        statisticsSampler.sampleTemperature(system);
 
-    //IO movie("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/movie.xyz");
-    IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
-    cout << "max" << max_time << endl;
-    cout << setw(20) << "Timestep" <<
-            setw(20) << "Time" <<
-            setw(20) << "Temperature" <<
-            setw(20) << "KineticEnergy" <<
-            setw(20) << "PotentialEnergy" <<
-            setw(20) << "TotalEnergy" <<
-            setw(20) << "Diffusion constant" << endl;
-    for(int timestep=0; timestep<(int)max_time; timestep++) {
-        system.step(dt);
-        statisticsSampler.sample(system);
-        if( timestep % 10 == 0 ) {
-            // Print the timestep every 100 timesteps
-            cout << setw(20) << system.steps() <<
-                    setw(20) << system.time() <<
-                    setw(20) << UnitConverter::temperatureToSI(statisticsSampler.temperature() ) <<
-                    setw(20) << statisticsSampler.kineticEnergy() <<
-                    setw(20) << statisticsSampler.potentialEnergy() <<
-                    setw(20) << statisticsSampler.totalEnergy() <<
-                    setw(20) << statisticsSampler.diffusionConstant() << endl;
+        //system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
+        statisticsSampler.sampleDensity(system, N_x, N_y, N_z);
+        cout << "Density of the system: " << statisticsSampler.density() << endl;
+
+        //IO movie("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/movie.xyz");
+        IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
+        cout << "max" << max_time << endl;
+        cout << setw(20) << "Timestep" <<
+                setw(20) << "Time" <<
+                setw(20) << "Temperature" <<
+                setw(20) << "KineticEnergy" <<
+                setw(20) << "PotentialEnergy" <<
+                setw(20) << "TotalEnergy" <<
+                setw(20) << "Diffusion constant" << endl;
+        for(int timestep=0; timestep<(int)max_time; timestep++) {
+            system.step(dt);
+            statisticsSampler.sample(system);
+            if( timestep % 100 == 0 ) {
+                // Print the timestep every 100 timesteps
+                cout << setw(20) << system.steps() <<
+                        setw(20) << system.time() <<
+                        setw(20) << UnitConverter::temperatureToSI(statisticsSampler.temperature() ) <<
+                        setw(20) << statisticsSampler.kineticEnergy() <<
+                        setw(20) << statisticsSampler.potentialEnergy() <<
+                        setw(20) << statisticsSampler.totalEnergy() <<
+                        setw(20) << statisticsSampler.diffusionConstant() << endl;
+            }
+            //if( timestep % 10 == 0 )  movie.saveState(system);
+            movie.saveState(system);
+
+            if( timestep == (max_time - 1) ){ //last iteration, write diffusion constant to file
+                string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
+                ofstream diffusionFile;
+                diffusionFile.open(path, std::ios::app);
+                diffusionFile << setw(20) << UnitConverter::temperatureToSI(statisticsSampler.temperature()) << " " << UnitConverter::diffusionToSI(statisticsSampler.diffusionConstant()) << endl;
+                diffusionFile.close();
+                cout << "hei" << endl;
+            }
         }
-        //if( timestep % 10 == 0 )  movie.saveState(system);
-        movie.saveState(system);
+
+        movie.close();
     }
-
-    movie.close();
-
     return 0;
 }
