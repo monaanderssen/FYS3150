@@ -53,6 +53,7 @@ int main(int numberOfArguments, char **argumentList)
 
         StatisticsSampler statisticsSampler;
         statisticsSampler.sampleTemperature(system);
+        statisticsSampler.m_initialTemperature = initialTemperature;
 
         //system.potential().setEpsilon(UnitConverter::temperatureFromSI(119.8));
         statisticsSampler.sampleDensity(system, N_x, N_y, N_z);

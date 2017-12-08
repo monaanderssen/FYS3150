@@ -37,7 +37,8 @@ void StatisticsSampler::saveToFile(System &system)
             setw(20) << m_potentialEnergy <<
             setw(20) << totalEnergy() <<
             setw(20) << UnitConverter::diffusionToSI(m_diffusionConstant) <<
-            setw(20) << m_r2 << endl; //m²
+            setw(20) << m_r2 <<
+            setw(20) << m_TRatio << endl; //m²
 }
 
 /*
@@ -62,8 +63,9 @@ void StatisticsSampler::sample(System &system)
     samplePotentialEnergy(system);
     sampleTemperature(system);
     sampleDiffusionConstant(system);
+    sampleTRatio(system);
     //sampleDensity(system);
-    saveToFile(system);
+    //saveToFile(system);
 }
 
 void StatisticsSampler::sampleKineticEnergy(System &system)
@@ -100,6 +102,11 @@ void StatisticsSampler::sampleDensity(System &system, int N_x, int N_y, int N_z)
     for(Atom *atom : system.atoms()) {
         m_density += (atom->mass())/(m_b*m_b*m_b*N_x*N_y*N_z);
     }
+}
+
+
+void StatisticsSampler::sampleTRatio(System &system){
+    m_TRatio = m_temperature/m_initialTemperature;
 }
 
 void StatisticsSampler::sampleDiffusionConstant(System &system){

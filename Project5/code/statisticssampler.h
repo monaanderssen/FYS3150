@@ -16,9 +16,12 @@ private:
     double m_density = 0;
     double m_diffusionConstant;
     double m_r2;
+    double m_TRatio;
 public:
+    double m_initialTemperature;
     StatisticsSampler();
     void saveToFile(System &system);
+    void sampleTRatio(System &system);
     void saveDiffusionDifferentTemperatures(System &system);
     void sample(System &system);
     void sampleKineticEnergy(System &system);
