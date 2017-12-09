@@ -46,7 +46,7 @@ void StatisticsSampler::saveToFile(System &system)
 void StatisticsSampler::tRatioToFile(System &system)
 {
     //string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/ratio/T_ratio") + to_string(UnitConverter::temperatureToSI(m_initialTemperature)) + ".txt";
-    string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/ratio_seed/T_ratio3.txt");
+    string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/ratio_seed/T_ratio7.txt");
     ofstream tratioFile;
     tratioFile.open(path, std::ios::app);
     tratioFile << setw(20) << UnitConverter::timeToSI(system.time()) << " " << m_TRatio << endl;

@@ -1,5 +1,6 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
+from matplotlib.offsetbox import AnchoredText
 import sys
 import glob
 import os
@@ -8,6 +9,7 @@ average_ratio = 0
 counter = 0
 legend_name_l = []
 path = "/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/ratio_seed"
+f,ax = plt.subplots(1,1)
 for filename in sorted(glob.glob(os.path.join(path, '*.txt'))):
     with open(filename) as my_file:
         ratio = []
@@ -37,6 +39,7 @@ plt.grid('on')
 plt.title('Ratio $T/T_{initial}$')
 plt.xlabel('Time [seconds]')
 plt.ylabel('$T/T_i$')
+ax.add_artist(AnchoredText('$T_{initial}=500$ K', loc=1))
 #plt.legend(legend_name_l)
 plt.show()
 
