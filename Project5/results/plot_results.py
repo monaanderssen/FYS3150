@@ -1,6 +1,7 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
 import sys
+import pylab
 
 inputfile = sys.argv[1]
 file = open(inputfile, "r")
@@ -38,6 +39,12 @@ plt.title('Temperature')
 plt.show()
 
 plt.plot(time, E_k, "b", time, E_p, "r", time, E_tot, "k")
+plt.xlabel("Time [s]", fontsize=22); plt.ylabel("Energy [J]", fontsize=22);
+plt.title("Energies", fontsize=22)
+plt.grid('on')
+plt.legend(["Kinetic energy", "Potential energy", "Total energy"], fontsize=16)
+pylab.xticks(fontsize=16); pylab.yticks(fontsize=16)
+#plt.xlim(2, 2.6)
 plt.show()
 
 plt.plot(time, D)

@@ -24,7 +24,8 @@ void StatisticsSampler::saveToFile(System &system)
     if(!m_file.good()) {
         //Mona:/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/statistics.txt
         //Peder: /home/pederbh/UiO/FYS4150/FYS3150/Project5/results/statistics.txt
-        m_file.open("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/statistics.txt", ofstream::out);
+        m_file.open("/Users/monaanderssen/Documents/FYS3150/Project5/results/statistics.txt", ofstream::out);
+        //m_file.open("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/statistics.txt", ofstream::out);
         // If it's still not open, something bad happened...
         if(!m_file.good()) {
             cout << "Error, could not open statistics.txt" << endl;
@@ -46,7 +47,8 @@ void StatisticsSampler::saveToFile(System &system)
 void StatisticsSampler::tRatioToFile(System &system)
 {
     //string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/ratio/T_ratio") + to_string(UnitConverter::temperatureToSI(m_initialTemperature)) + ".txt";
-    string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/ratio_seed/T_ratio7.txt");
+    string path= string("/Users/monaanderssen/Documents/FYS3150/Project5/results/ratio_seed/T_ratio7.txt");
+    //string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/ratio_seed/T_ratio7.txt");
     ofstream tratioFile;
     tratioFile.open(path, std::ios::app);
     tratioFile << setw(20) << UnitConverter::timeToSI(system.time()) << " " << m_TRatio << endl;

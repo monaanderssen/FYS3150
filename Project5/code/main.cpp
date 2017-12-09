@@ -14,7 +14,8 @@ using namespace std;
 
 int main(int numberOfArguments, char **argumentList)
 {
-    remove("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
+    remove("/Users/monaanderssen/Documents/FYS3150/Project5/results/diffusion_different_temperatures.txt");
+    //remove("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
     int numberOfUnitCells = 5;
     int N_x = 4; int N_y= 4; int N_z = 4;
     int max_time;
@@ -62,8 +63,8 @@ int main(int numberOfArguments, char **argumentList)
         statisticsSampler.sampleDensity(system, N_x, N_y, N_z);
         cout << "Density of the system: " << statisticsSampler.density() << endl;
 
-        //IO movie("/Users/monaanderssen/Documents/FYS3150/FYS3150/Project5/results/movie.xyz");
-        IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
+        IO movie("/Users/monaanderssen/Documents/FYS3150/Project5/results/movie.xyz");
+        //IO movie("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/movie.xyz"); // To write the state to file
         cout << "max" << max_time << endl;
         cout << setw(20) << "Timestep" <<
                 setw(20) << "Time" <<
@@ -93,7 +94,8 @@ int main(int numberOfArguments, char **argumentList)
                 temperature_average += statisticsSampler.temperature();
                 average_counter += 1;
                 if( timestep == (max_time - 1)){
-                    string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
+                    string path= string("/Users/monaanderssen/Documents/FYS3150/Project5/results/diffusion_different_temperatures.txt");
+                    //string path= string("/home/pederbh/UiO/FYS4150/FYS3150/Project5/results/diffusion_different_temperatures.txt");
                     diffusion_average /= average_counter;
                     temperature_average /= average_counter;
                     ofstream diffusionFile;
